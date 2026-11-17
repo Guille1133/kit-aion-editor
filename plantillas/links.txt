@@ -1,0 +1,4 @@
+# Reels que te gustan, uno por línea:
+# link | estilo | qué te gusta de ese video
+# Ejemplo:
+# https://www.instagram.com/reel/XXXX | tips-rapidos | subtítulos grandes y cortes rápidos

@@ -1,0 +1,6 @@
+{
+  "repo": "https://github.com/Melvynx/video-agent-skills.git",
+  "commit": "f4542923f7f796a1fa0e544cbfc1109d5eec87d8",
+  "probado": "2026-11-17, Windows 11 (16 GB, sin placa de video)",
+  "nota": "Versión fija del motor. Al subirla, probar instalación desde cero y una edición completa antes de cambiar este archivo."
+}

@@ -37,6 +37,7 @@ Claude instala los programas que falten, el motor, tus comandos y te hace unas p
 - **Grabá sin nadie que te lea el guion en voz alta al lado.** El editor corta la otra voz, pero sale más limpio sin ella.
 - iPhone: desactivá HDR y grabá en 1080p a 30 fps.
 - Al terminar cada frase, seguí mirando a cámara un segundo.
+- Antes de mostrarte cada video, Claude lo revisa dos veces (palabras comidas, cortes, silencios, errores en pantalla) y te dice en qué segundos conviene escuchar.
 - La primera transcripción de cada video tarda entre 1 y 2,5 veces lo que dura. Los borradores salen a mitad de resolución para que tu compu no se cuelgue; el final, completo.
 
 ## Qué hay acá
@@ -46,7 +47,7 @@ Claude instala los programas que falten, el motor, tus comandos y te hace unas p
 | `INSTALAR.md` | El paso a paso que sigue Claude para instalar y actualizar |
 | `skills/` | Los comandos `/aion-editar`, `/aion-estilo`, `/aion-instalar` |
 | `reglas/` | Reglas de calidad y de español que se aplican en cada edición |
-| `aion/` | Herramientas: arreglo de whisper en Windows, detector de otra voz, verificador, versión fija del motor |
+| `aion/` | Herramientas: doble revisión (`revisar.mjs`), detector de otra voz, arreglo de whisper en Windows, verificador, versión fija del motor |
 | `plantillas/` | Marca, reglas propias, links de referencias, tabla de estilos |
 
 Créditos y licencias: [CREDITOS.md](CREDITOS.md).

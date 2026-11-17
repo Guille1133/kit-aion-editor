@@ -14,7 +14,7 @@ const MARGEN = mi > 0 ? Number(process.argv[mi + 1]) : 15;
 const PASO = 0.05;
 
 const r = spawnSync('ffmpeg', ['-v', 'error', '-i', file, '-vn', '-ac', '1', '-ar', '16000', '-af',
-  `asetnsamples=${16000 * PASO},astats=metadata=1:reset=1,ametadata=print:key=lavfi.astats.Overall.RMS_level:file=-`,
+  `aresample=16000,asetnsamples=${16000 * PASO},astats=metadata=1:reset=1,ametadata=print:key=lavfi.astats.Overall.RMS_level:file=-`,
   '-f', 'null', '-'], { encoding: 'utf8', maxBuffer: 1 << 28 });
 if (r.status !== 0) { console.log('error: ffmpeg no pudo leer el archivo'); process.exit(1); }
 const db = [...r.stdout.matchAll(/RMS_level=(-?[\d.]+|-inf)/g)].map(m => m[1] === '-inf' ? -120 : Number(m[1]));
@@ -51,4 +51,19 @@ else {
   for (const [a, b, p] of otras) console.log(`  ${a.toFixed(2)}-${b.toFixed(2)} s  ${p} dB`);
 }
 const cut = otras.map(([a, b]) => [Math.max(0, +(a - 0.05).toFixed(2)), +(b + 0.05).toFixed(2)]);
-console.log(JSON.stringify({ principal: +principal.toFixed(1), otras, cut }));
+
+// Método robusto para grabaciones con lectora: marcar SOLO la voz principal y cortar todo lo demás.
+// Tramo principal = tramo de voz cuyo pico llega a la voz principal (- margen). Se unen los que están
+// a menos de 0,35 s, con 0,06 s de aire antes y 0,12 s después. cutPrincipal = todo lo que queda afuera.
+const fin = db.length * PASO;
+const prin = []; for (const [a, b, p] of tramos) {
+  if (p < principal - MARGEN) continue;
+  const A = Math.max(0, a - 0.06), B = Math.min(fin, b + 0.12), u = prin.at(-1);
+  if (u && A - u[1] < 0.35) u[1] = Math.max(u[1], B); else prin.push([A, B]);
+}
+const cutPrincipal = []; let t = 0;
+for (const [a, b] of prin) { if (a - t > 0.05) cutPrincipal.push([+t.toFixed(2), +a.toFixed(2)]); t = b; }
+if (fin - t > 0.05) cutPrincipal.push([+t.toFixed(2), +fin.toFixed(2)]);
+const vozPrincipal = prin.reduce((s, [a, b]) => s + b - a, 0);
+if (otras.length) console.log(`con otra voz: usar "cutPrincipal" (deja solo la voz principal, ${vozPrincipal.toFixed(1)} s de ${fin.toFixed(1)} s)`);
+console.log(JSON.stringify({ principal: +principal.toFixed(1), otras, cut, cutPrincipal }));

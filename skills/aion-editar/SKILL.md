@@ -13,6 +13,7 @@ Leer siempre antes de empezar:
 - `.aion/kit/reglas/calidad.md` y `.aion/kit/reglas/espanol.md`
 - `video-agent/marca.md` (quién es, colores, voseo o tú, cierre)
 - `video-agent/mis-reglas.md` si existe (sus correcciones guardadas)
+- `.aion/kit/reglas/revision.md` (la doble revisión antes de mostrar)
 
 Hablar en español, simple, sin tecnicismos. Antes de cada paso largo, decir en una línea qué hace y cuánto tarda.
 
@@ -30,7 +31,7 @@ node .aion/kit/aion/voces.mjs "<video>"
 ```
 
 - Sin audio: parar y decirlo.
-- Otra voz: decir cuántos segundos encontró y que se van a cortar. Guardar su `cut` para el paso 4.
+- Otra voz: decir cuántos segundos encontró y que se van a cortar. Guardar su **`cutPrincipal`** para el paso 4 (deja solo la voz del alumno; es más seguro que cortar solo lo que detecta de la otra voz).
 
 ## 3. Proyecto y palabras (motor)
 
@@ -39,7 +40,7 @@ Pasos 1 y 2 de `short-editing` (`init`, `words <proyecto> es`). La transcripció
 ## 4. Spec
 
 Paso 3 de `short-editing`, más:
-- `cut`: los tramos de otra voz (paso 2) + las retomas. Recorrer el guion frase por frase y quedarse con la **última toma completa** de cada una.
+- `cut`: el `cutPrincipal` del paso 2 si hubo otra voz + las retomas y arranques falsos. Recorrer el guion frase por frase y quedarse con la **última toma completa** de cada una.
 - `captions.replace`: todo lo que Whisper escribió distinto del guion, y el voseo de `espanol.md`.
 - Cada `counter` con `sep: '.'` y `decSep: ','`.
 - Hook trabajado (mini historia que se mueve desde el cuadro 0) y ningún hueco de papel vacío de más de 1 s.
@@ -63,12 +64,13 @@ Esperar el OK. Lo que pida para este video manda sobre el estilo.
    node .claude/skills/short-editing/engine/short.mjs audio <proyecto>
    node .claude/skills/short-editing/engine/short.mjs final <proyecto>
    ```
-3. Verificar como dice "Antes de decir listo" en `calidad.md` (QC, voz cortada contra el guion, cuadros).
-4. Mostrarle el borrador completo (abrirlo: `start "" "<mp4>"` en Windows, `open "<mp4>"` en Mac) y decir qué tiene que revisar de oído.
+3. **Doble revisión obligatoria** (`.aion/kit/reglas/revision.md`): pasada 1 `node .aion/kit/aion/revisar.mjs <proyecto> --max 90` (+ `--con-lectora` si hubo otra voz) hasta 0 errores; pasada 2 con un subagente revisor que no editó, hasta "Sin errores". Con un solo error no se muestra. Avisar antes que la pasada 1 tarda unos minutos.
+4. Verificar como dice "Antes de decir listo" en `calidad.md` (QC del motor, cuadros).
+5. Mostrarle el borrador completo (abrirlo: `start "" "<mp4>"` en Windows, `open "<mp4>"` en Mac) con la línea de la doble revisión y los puntos para escuchar con su segundo.
 
 ## 7. Correcciones y final
 
-- Cada corrección: cambiar el spec, cuadros, borrador de nuevo. Lo que sirva para otros videos se guarda en el momento (ver "Aprender" en `calidad.md`) y se le avisa en una línea.
+- Cada corrección: cambiar el spec, cuadros, borrador de nuevo y doble revisión de nuevo. Lo que sirva para otros videos se guarda en el momento (ver "Aprender" en `calidad.md`) y se le avisa en una línea.
 - Con su OK: render completo (`short.mjs all <proyecto>`), verificar la línea QC (`h264 1080 1920`), escribir `.srt` y `post.md` (paso 7 del motor) y decirle dónde está.
 - Si aprobó el video con un estilo en `borrador` o `en-prueba`, proponerle pasarlo a `aprobado` en `video-agent/styles/README.md`.
 - Al final, borrar `video-agent/.tmp/` y ofrecer borrar la copia del video (`assets/source.mp4`) para liberar disco.

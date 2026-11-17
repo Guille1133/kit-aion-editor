@@ -6,7 +6,7 @@ Orden de prioridad: lo que pide el alumno para este video > su estilo (`video-ag
 ## Antes de editar
 
 - **Guion junto con el video.** Pedirlo siempre (texto pegado, archivo, Notion, Google Docs). Guardarlo en `video-agent/guiones/<slug>.md`. Sirve para corregir los subtítulos, elegir tomas y comprobar el final. Sin guion: avisar en una línea que la edición va a ser menos precisa y seguir.
-- **Una sola voz.** Correr `node .aion/kit/aion/voces.mjs <toma>` en cada toma nueva. Si encuentra otra voz (alguien que lee el guion, un comentario de fondo), avisar y sumar su `cut` al spec. Nunca cortar un tramo que el guion dice que es del alumno sin escucharlo antes (`ffmpeg -ss a -t 3`).
+- **Una sola voz.** Correr `node .aion/kit/aion/voces.mjs <toma>` en cada toma nueva. Si encuentra otra voz (alguien que lee el guion, un comentario de fondo), avisar y usar su `cutPrincipal` en el spec (deja solo la voz del alumno). Nunca cortar un tramo que el guion dice que es del alumno sin escucharlo antes (`ffmpeg -ss a -t 3`).
 - **El original no se toca.** Nunca mover, renombrar, editar ni borrar el video del alumno.
 
 ## Cortes
@@ -32,6 +32,9 @@ Orden de prioridad: lo que pide el alumno para este video > su estilo (`video-ag
 - Sin whooshes ni efectos de "novato": golpes solo en un dato o un remate real.
 
 ## Antes de decir "listo"
+
+**Doble revisión obligatoria** antes de mostrar y antes del render final: `reglas/revision.md` (pasada 1 `aion/revisar.mjs` en 0 errores + pasada 2 con un revisor que no editó). Además:
+
 
 1. Línea QC del motor: `h264 1080 1920`, duración igual al timeline, ≈ -14 LUFS, pico ≤ -1 dBTP.
 2. Transcribir la voz ya cortada (`assets/voice.wav`) y compararla con el guion frase por frase. Si falta algo, transcribir ese tramo solo antes de concluir (Whisper a veces saltea frases en audios largos).
